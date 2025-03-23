@@ -26,6 +26,9 @@ function App() {
     const [openSignUp, setOpenSignUp] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [authToken, setAuthToken] = useState(null);
+    const [authTokenType, setAuthTokenType] = useState(null);
+    const [userId, setUserId] = useState('');
 
     useEffect(() => {
         fetch(BASE_URL + '/post/all')
@@ -54,7 +57,41 @@ function App() {
     }, []);
 
     const signIn = (event) => {
+        event.preventDefault();
 
+        let formData = new FormData();
+        formData.append('username', username);
+        formData.append('password', password);
+
+        const requestOptions = {
+            method: 'POST',
+            body: formData,
+        }
+
+        fetch(BASE_URL + '/login', requestOptions)
+        .then(response => {if(response.ok) {
+            return response.json();
+        }
+        throw response
+        })
+        .then(data => {console.log(data)
+            setAuthToken(data.access_token)
+            setAuthToken(data.token_type)
+            setUserId(data.user_id)
+            setUsername(data.username)
+        })
+        .catch(error => {console.log(error)
+        alert(error)
+        })
+
+        setOpenSignIn(false);
+    }
+
+    const signOut = (event) => {
+        setAuthToken(null)
+        setAuthToken(null)
+        setUserId("")
+        setUsername("")
     }
 
     return (
@@ -103,10 +140,15 @@ function App() {
                     src="https://cdn.worldvectorlogo.com/logos/instagram-1.svg"
                     alt="Instagram"
                 />
+                {authToken ? (
+                    <Button onClick={() => signOut()}>Logout</Button>
+                ): (
                 <div>
                     <Button onClick={() => setOpenSignIn(true)}>Login</Button>
                     <Button onClick={() => setOpenSignUp(true)}>Signup</Button>
                 </div>
+                    )
+                }
             </div>
 
             <div className="app_posts">
