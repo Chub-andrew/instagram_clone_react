@@ -1,53 +1,60 @@
 import './App.css';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from './Post';
+import Button from "@mui/material/Button"; // Correct import
 
-const BASE_URL = 'http://localhost:8000'
+const BASE_URL = 'http://localhost:8000';
 
 function App() {
-
   const [posts, setPosts] = useState([]);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);
 
   useEffect(() => {
     fetch(BASE_URL + '/post/all')
-    .then(response => {
-      const json = response.json()
-      console.log(json);
-      if(response.ok) {
-        return json
-      }
-      throw response;
-    })
-    .then (data =>{
-      const result = data.sort((a, b) => {
-        const t_a = a.timestamp.split(/[-T :]/);
-        const t_b = b.timestamp.split(/[-T :]/);
-        const d_a = new Date(t_a[0], t_a[1]-1, t_a[2], t_a[3], t_a[4], t_a[5]);
-        const d_b = new Date(t_b[0], t_b[1]-1, t_b[2], t_b[3], t_b[4], t_b[5]);
-        return d_b - d_a;
-      })
-      return result;
-    })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (!Array.isArray(data)) {
+            throw new Error('Invalid data format received');
+          }
 
-    .then(data => {
-      setPosts(data);
-    })
-    .catch(error => {
-      console.log("Error fetching data: ", error);
-      alert("Error fetching data: ", error);
-    });
+          const sortedPosts = data.sort((a, b) => {
+            if (!a.timestamp || !b.timestamp) return 0;
+            return new Date(b.timestamp) - new Date(a.timestamp);
+          });
+
+          setPosts(sortedPosts);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          alert('Error fetching data: ' + error.message);
+        });
   }, []);
 
   return (
-    <div className='app_posts'>
-      {
-      posts.map(post => (
-        <Post
-          post={post}
-        />
-      ))
-    }
-    </div>
+      <div className="app">
+        <div className="app_header">
+          <img
+              className="app_headerImage"
+              src="https://cdn.worldvectorlogo.com/logos/instagram-1.svg"
+              alt="Instagram"
+          />
+          <div>
+            <Button onClick={() => setOpenSignIn(true)}>Login</Button>
+            <Button onClick={() => setOpenSignUp(true)}>Signup</Button>
+          </div>
+        </div>
+        <div className="app_posts">
+          {posts.map(post => (
+              <Post key={post.id} post={post} />
+          ))}
+        </div>
+      </div>
   );
 }
 
