@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Input from "@mui/material/Input";
+import ImageUpload from "./ImageUpload";
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -29,6 +30,29 @@ function App() {
     const [authToken, setAuthToken] = useState(null);
     const [authTokenType, setAuthTokenType] = useState(null);
     const [userId, setUserId] = useState('');
+    const [email, setEmail] = useState('');
+
+    useEffect(() => {
+       setAuthToken(window.localStorage.getItem('authToken'));
+       setAuthTokenType(window.localStorage.getItem('authTokenType'));
+       setUserId(window.localStorage.getItem('userId'));
+       setUsername(window.localStorage.getItem('username'));
+    }, [])
+
+    useEffect(() => {
+        authToken
+        ? window.localStorage.setItem('authToken', authToken)
+            : window.localStorage.removeItem('authToken');
+        authTokenType
+        ? window.localStorage.setItem('authTokenType', authTokenType)
+            : window.localStorage.removeItem('authTokenType');
+        userId
+        ? window.localStorage.setItem('userId', userId)
+            : window.localStorage.removeItem('userId');
+        username
+        ? window.localStorage.setItem('username', username)
+            : window.localStorage.removeItem('username');
+    }, [authToken,authTokenType, userId]);
 
     useEffect(() => {
         fetch(BASE_URL + '/post/all')
@@ -57,7 +81,7 @@ function App() {
     }, []);
 
     const signIn = (event) => {
-        event.preventDefault();
+        event?.preventDefault();
 
         let formData = new FormData();
         formData.append('username', username);
@@ -92,6 +116,35 @@ function App() {
         setAuthToken(null)
         setUserId("")
         setUsername("")
+    }
+
+    const singUp = (event) => {
+        event?.preventDefault();
+
+        const json_string = JSON.stringify({
+            username: username,
+            email: email,
+            password: password,
+        })
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: json_string({})
+        }
+        fetch(BASE_URL + 'user/', requestOptions)
+            .then(response => {if(response.ok) {
+                return response.json();
+            }
+            throw response})
+            .then(data => {
+                // console.log(data)
+                signIn()
+            })
+            .catch(error => {console.log(error)
+            alert(error)})
+
+        setOpenSignUp(false)
     }
 
     return (
@@ -134,6 +187,41 @@ function App() {
                 </Box>
             </Modal>
 
+            <Modal open={openSignUp}
+                   onClose={() => setOpenSignUp(false)}>
+                <div style={modalStyle}>
+                    <form className="app_signin">
+                        <center>
+                            <img className="app_headerImage"
+                                 src="https://cdn.worldvectorlogo.com/logos/instagram-1.svg"
+                                 alt="Instagram"/>
+                        </center>
+                        <Input
+                            placeholder="Username"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            fullWidth
+                            sx={{ my: 1 }}
+                        />
+                        <Input
+                            placeholder="email"
+                            type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} />
+                        <Input
+                            placeholder="Password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            fullWidth
+                            sx={{ my: 1 }}
+                        />
+                        <Button type="submit" variant="contained" fullWidth>Sign Up</Button>
+                    </form>
+                </div>
+            </Modal>
+
             <div className="app_header">
                 <img
                     className="app_headerImage"
@@ -156,6 +244,14 @@ function App() {
                     <Post key={post.id} post={post} />
                 ))}
             </div>
+
+            { authToken ? (
+                <ImageUpload
+                />
+            ) : (
+                <h3>You need to login to upload</h3>
+            )}
+
         </div>
     );
 }
