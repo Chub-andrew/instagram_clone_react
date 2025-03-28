@@ -186,8 +186,8 @@ function App() {
                     <form className="app_signin">
                         <center>
                             <img className="app_headerImage"
-                                 src="https://i2.wp.com/mrvsdaily.com/wp-content/uploads/2018/02/new-instagram-text-logo.png"
-                                 alt="Instagram"/>
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png"
+                                alt="Instagram"/>
                         </center>
                         <Input
                             placeholder="username"
@@ -215,7 +215,7 @@ function App() {
                     <form className="app_signin">
                         <center>
                             <img className="app_headerImage"
-                                 src="https://i2.wp.com/mrvsdaily.com/wp-content/uploads/2018/02/new-instagram-text-logo.png"
+                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png"
                                  alt="Instagram"/>
                         </center>
                         <Input
@@ -243,7 +243,7 @@ function App() {
 
             <div className="app_header">
                 <img className="app_headerImage"
-                     src="https://i2.wp.com/mrvsdaily.com/wp-content/uploads/2018/02/new-instagram-text-logo.png"
+                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png"
                      alt="Instagram"/>
 
                 {authToken ? (

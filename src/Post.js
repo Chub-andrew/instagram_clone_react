@@ -102,7 +102,7 @@ function Post({ post, authToken, authTokenType, username }) {
             <div className="post_header">
                 <Avatar
                     alt="Catalin"
-                    src=""/>
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmg_uVlpXt0JrABH5AqtRS8-U3tMdnRZGh6w&s"/>
                 <div className="post_headerInfo">
                     <h3>{post.user.username}</h3>
                     <Button className="post_delete" onClick={handleDelete}>
